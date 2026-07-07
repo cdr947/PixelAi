@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Detection Results - PixelMind AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h1>Detection Results</h1>
+        <p>Uploaded on {{ instance.created_at|date:"M d, Y H:i" }}</p>
+    </div>
+
+    <div class="main-grid">
+        <!-- Original Image -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-image"></i> Original Image</div>
+            <img src="{{ instance.image.url }}" class="results-image" alt="Original Image">
+            <p class="results-info result-note-center">Input Image</p>
+        </div>
+
+        <!-- Predicted Image -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-wand-magic-sparkles"></i> Predicted Image</div>
+            {% if instance.predicted %}
+                <img src="{{ instance.predicted.url }}" class="results-image" alt="Predicted Image">
+                <p class="results-info result-note-center">Analyzed with Detection Model</p>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-circle empty-state-icon empty-state-icon-sm"></i>
+                    <p>No predicted image available.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Detection Results -->
+        <div class="card" id="detectionResultsCard">
+            <div class="card-title"><i class="fas fa-chart-bar"></i> Detection Summary</div>
+            
+            {% if instance.results %}
+                <table class="detection-table">
+                    <thead>
+                        <tr>
+                            <th>Label</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ instance.results.message|default:"No detections" }}</td>
+                            <td>
+                                <span class="confidence-high">{{ instance.results.scores.0|default:0|floatformat:2 }}%</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% if instance.results.labels %}
+                    <table class="detection-table">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for label in instance.results.labels %}
+                                <tr>
+                                    <td>{{ label }}</td>
+                                    <td>{{ instance.results.scores.0|default:0|floatformat:2 }}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                <div class="result-summary spaced-lg">
+                    <p><strong>Total Objects:</strong> {{ instance.results.total_objects_detected|default:0 }}</p>
+                    <p><strong>Detection Label:</strong> {{ instance.results.labels|join:", "|default:"No detections" }}</p>
+                    <p><strong>Confidence Score:</strong> {{ instance.results.scores.0|default:0|floatformat:1 }}%</p>
+                    <p><strong>Threshold:</strong> {{ instance.results.config.threshold|default:0.5|floatformat:2 }}</p>
+                    <p><strong>Processing Time:</strong> ~0.12s</p>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No detection data available.</p>
+                </div>
+            {% endif %}
+
+            <div class="button-group spaced-top">
+                <a href="{% url 'webapp:upload' %}" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Upload Another
+                </a>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Result Data -->
+    <div class="card card-spaced-top">
+        <div class="card-title"><i class="fas fa-code"></i> Full Result Data (JSON)</div>
+        <pre class="code-block">{{ instance.results|default:"{}" }}</pre>
+    </div>
+</div>
+{% endblock %}

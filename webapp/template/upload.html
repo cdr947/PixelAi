@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Image - PixelMind AI{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="header-section">
+        <h1>Object Detection Web App</h1>
+        <p>Identify and analyze objects in real-time with AI.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        {% csrf_token %}
+        <div class="main-grid">
+            <!-- Left Column: Upload -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> Step 1: Upload or Stream Image/Video</div>
+
+                <div class="upload-box" id="uploadBox">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop Image/Video or Click to Browse</p>
+                    <input type="file" id="fileInput" name="image" accept="image/*,video/*" required>
+                </div>
+
+                <div class="upload-actions">
+                    <button type="button" class="btn btn-primary" id="browseButton">
+                        <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                    <button type="button" class="btn btn-secondary">
+                        <i class="fas fa-camera"></i> Start Camera Stream
+                    </button>
+                </div>
+
+                <!-- Recent Uploads -->
+                <div class="recent-uploads">
+                    <div class="recent-uploads-header">
+                        <h3>Recent Uploads</h3>
+                        <div class="processing-badge">
+                            <div class="spinner"></div>
+                            <span>Processing...</span>
+                        </div>
+                    </div>
+                    <div class="thumbnail-grid" id="recentUploads">
+                        {% if recent_images %}
+                            {% for img in recent_images %}
+                                <img src="{{ img.image.url }}" class="thumbnail js-result-link" title="Click to view" data-result-pk="{{ img.pk }}">
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-state full-span">
+                                No uploads yet. Upload an image to get started.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Results Info -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-chart-bar"></i> Step 2: Object Detection Results</div>
+                <div class="empty-state">
+                    <i class="fas fa-images empty-state-icon"></i>
+                    <p>After upload, you will be redirected to the full results page.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Configuration -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-sliders-h"></i> Configuration</div>
+
+                <div class="config-group">
+                    <label class="config-label" for="thresholdSlider">Threshold</label>
+                    <input type="range" min="0" max="1" step="0.1" value="0.5" id="thresholdSlider" name="threshold" onchange="updateThreshold(this.value)">
+                    <div class="range-value" id="thresholdValue">0.5</div>
+                </div>
+
+                <div class="config-group">
+                    <label class="config-label" for="displayMode">Settings</label>
+                    <select id="displayMode" name="display_mode">
+                        <option value="all" selected>All Options</option>
+                        <option value="boxes">Show Bounding Boxes</option>
+                        <option value="labels">Show Labels</option>
+                        <option value="confidence">Show Confidence</option>
+                    </select>
+                </div>
+
+                <div class="config-group">
+                    <label class="config-label" for="categoryFilter">Categories</label>
+                    <select id="categoryFilter" name="category_filter">
+                        <option value="all" selected>All Categories</option>
+                        <option value="person">Person Only</option>
+                        <option value="vehicle">Vehicle Only</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button type="reset" class="btn btn-secondary" id="clearButton">Clear</button>
+                    <button type="submit" class="btn btn-dark">Re-detect</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Drag and drop functionality
+    const uploadBox = document.getElementById('uploadBox');
+    const fileInput = document.getElementById('fileInput');
+    const browseButton = document.getElementById('browseButton');
+    const uploadForm = document.getElementById('uploadForm');
+    const thresholdSlider = document.getElementById('thresholdSlider');
+    const clearButton = document.getElementById('clearButton');
+
+    document.querySelectorAll('.js-result-link').forEach((thumbnail) => {
+        thumbnail.addEventListener('click', () => {
+            loadResult(thumbnail.dataset.resultPk);
+        });
+    });
+
+    browseButton.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.style.background = '#f0fbff';
+        uploadBox.style.borderColor = '#ff6b35';
+    });
+
+    uploadBox.addEventListener('dragleave', () => {
+        uploadBox.style.background = '#f9fafb';
+        uploadBox.style.borderColor = '#00bfff';
+    });
+
+    uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        uploadForm.requestSubmit();
+    });
+
+    uploadBox.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+        uploadForm.requestSubmit();
+    });
+
+    function updateThreshold(value) {
+        document.getElementById('thresholdValue').innerText = value;
+    }
+
+    clearButton.addEventListener('click', () => {
+        window.setTimeout(() => {
+            updateThreshold(thresholdSlider.value);
+        }, 0);
+    });
+
+    updateThreshold(thresholdSlider.value);
+
+    function loadResult(pk) {
+        window.location.href = `{% url 'webapp:results' pk=0 %}`.replace('0', pk);
+    }
+    // @media print(
+    //     body * {
+    //         visibility: hidden;
+    //     }
+    //     #detectionResultsCard, #detectionResultsCard * {
+    //         visibility: visible;
+    //     }
+    //     #detectionResultsCard {
+    //         position: absolute;
+    //         left: 0;
+    //         top: 0;
+    //         width: 100%;
+    //     }
+    // )
+</script>
+{% endblock %}
