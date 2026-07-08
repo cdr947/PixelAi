@@ -92,13 +92,19 @@ def upload_view(request):
             original_path = Path(settings.MEDIA_ROOT) / inst.image.name
             output_path = Path(settings.MEDIA_ROOT) / f'predicted/{inst.id}'
             threshold = _parse_threshold(request.POST.get('threshold', '0.5'))
+            predicted_path = output_path / Path(inst.image.name).name
 
             result = run_inference(
                 str(original_path),
                 str(output_path),
                 threshold
             )
-            inst.predicted.name = f'predicted/{inst.id}/{Path(inst.image.name).name}'
+
+            if predicted_path.exists():
+                inst.predicted.name = str(predicted_path.relative_to(settings.MEDIA_ROOT))
+            else:
+                inst.predicted = None
+
             inst.results = result
             inst.save()
             return redirect('webapp:results', pk=inst.id, )
@@ -116,4 +122,7 @@ def current_models_view(request):
 
 def api_view(request):
     return render(request, 'api.html')
+
+def about_view(request):
+    return render(request, 'about.html')
 

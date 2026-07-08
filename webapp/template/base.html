@@ -19,6 +19,7 @@
             <div class="navbar-nav">
                 <a href="{% url 'webapp:upload' %}">Home</a>
                 <a href="{% url 'webapp:upload' %}">Detect</a>
+                <a href="{% url 'webapp:about' %}">About</a>
                 <a href="{% url 'webapp:current_models' %}">Models</a>
                 <a href="{% url 'webapp:api' %}">API</a>
                 <a href="https://github.com/PixelMindAI/pixelmind-docs">Docs</a>
@@ -34,7 +35,7 @@
             <div class="footer-section">
                 <h3>Links</h3>
                 <ul>
-                    <li><a href="#">About</a></li>
+                    <li><a href="{% url 'webapp:about' %}">About</a></li>
                     <li><a href="#">Object Detection</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>

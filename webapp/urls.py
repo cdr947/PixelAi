@@ -8,4 +8,5 @@ urlpatterns = [
     path('results/<int:pk>/', views.results_view, name='results'),
     path('api/', views.api_view, name='api'),
     path('current_models/', views.current_models_view, name='current_models'),
+    path('about/', views.about_view, name='about'),
 ]

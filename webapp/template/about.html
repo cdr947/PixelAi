@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}About - PixelMind AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h1>About PixelMind AI</h1>
+        <p>AI-powered object detection for fast visual understanding.</p>
+    </div>
+
+    <div class="main-grid">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-circle-info"></i> Project Overview</div>
+            <p>
+                PixelMind AI is a computer vision web application built with Django and YOLO.
+                It allows users to upload images, run inference, and inspect detection outputs with
+                confidence scores and annotated prediction images.
+            </p>
+            <p>
+                The goal of the project is to offer a practical and extensible foundation for
+                real-world AI workflows, from experimentation to deployment.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-gears"></i> What It Does</div>
+            <ul>
+                <li>Accepts image uploads from the browser</li>
+                <li>Runs YOLO-based object detection inference</li>
+                <li>Saves predicted images with annotations</li>
+                <li>Displays labels, scores, and result summaries</li>
+                <li>Keeps recent upload history for quick access</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-road"></i> Vision</div>
+            <p>
+                PixelMind AI is being developed as a modular platform that can grow into live
+                video analytics, model management, and API-first AI services.
+            </p>
+            <p>
+                This project demonstrates how to bridge machine learning inference with a usable
+                web interface and production-minded architecture.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

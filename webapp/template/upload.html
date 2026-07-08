@@ -159,7 +159,7 @@
     updateThreshold(thresholdSlider.value);
 
     function loadResult(pk) {
-        window.location.href = `{% url 'webapp:results' pk=0 %}`.replace('0', pk);
+        window.location.href = `/results/${pk}/`;
     }
     // @media print(
     //     body * {

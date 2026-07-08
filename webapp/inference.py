@@ -31,9 +31,9 @@ def run_inference(input_path, output_path,threshold=0.5, display_mode= None,cate
         if r.boxes is not None and len(r.boxes) >0:
             # Save preditced image with bounding boxes
             r.save(f'{output_path}/{input_path.name}')
-            predicted_classes = r.boxes.cls.tolist()  # Get the predicted class names for each detected object
-            predicted_scores = r.boxes.conf.tolist()  # Get the predicted scores for each detected
-            class_names = r.names  # Get the class names from the result
+            predicted_classes = r.boxes.cls.tolist()
+            predicted_scores = r.boxes.conf.tolist()  
+            class_names = r.names  #
             detections = []
             for object in predicted_classes:
                 if object in class_names:
@@ -42,7 +42,7 @@ def run_inference(input_path, output_path,threshold=0.5, display_mode= None,cate
             data = {
                 'message': 'Inference completed successfully.',
                 'labels': detections,
-                'scores': r.boxes.conf.tolist(),
+                'scores': predicted_scores,
                 'total_objects_detected': len(r.boxes),
                 'class_counts' : len(detections),
                 'config': {
