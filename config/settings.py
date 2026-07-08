@@ -11,8 +11,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG')
 
-def _env_list(name, default):
-    return [value.strip() for value in os.getenv(name, default).split(',') if value.strip()]
+def _env_list(name):
+    return [value.strip() for value in os.getenv(name).split(',') if value.strip()]
 
 
 ALLOWED_HOSTS = _env_list('ALLOWED_HOSTS')
