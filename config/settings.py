@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG')
 
-def _env_list(name):
+def _env_list(name, default = ""):
     return [value.strip() for value in os.getenv(name).split(',') if value.strip()]
 
 
@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        default=_env_list('DATABASE_URL', 'sqlite:///' + str(BASE_DIR / 'db.sqlite3')),
         conn_max_age=600,
         ssl_require=not DEBUG,
     )
